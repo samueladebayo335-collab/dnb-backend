@@ -1,9 +1,8 @@
 /**
- * @jest-environment node
- *
  * Tests for the QueryBuilder utility (#180).
  */
 
+import { jest } from "@jest/globals";
 import QueryBuilder, { query } from "../QueryBuilder.js";
 
 // Mock Mongoose Model and Query

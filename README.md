@@ -118,6 +118,23 @@ dashboard is available at `/admin/jobs`.
 | Stellar Wallet | `/api/stellar/wallet/*` |
 | Stellar Payments | `/api/stellar/payment/*` |
 
+### API response envelope convention
+
+Read/list endpoints return a consistent envelope so clients can rely on the
+shape and distinguish an empty result from an error:
+
+- **`200` + `{ success: true, data: [...] }`** — a successful read/list. When a
+  query legitimately matches nothing, `data` is an empty array and `success` is
+  still `true`. An empty result set is *not* an error.
+- **`{ success: false }` with a `4xx`/`5xx` status** — reserved strictly for
+  genuine failures (missing resource `404`, invalid input `400`, forbidden
+  `403`, server errors `500`).
+
+This applies to the bookstore, course, and search read endpoints. New
+controllers should follow the same rule: if the query could return zero rows
+for a normal request, return `success: true` with an empty `data` array — never
+flip `success` to `false` for an empty result.
+
 ### Machine-readable spec
 
 The full OpenAPI 3.1 contract for every mounted route lives in [`openapi.yaml`](openapi.yaml).
@@ -126,15 +143,13 @@ at it. It documents auth requirements, path and query parameters, request bodies
 schemas and status codes, reusable schemas for the core models, the standard error shape, and
 the endpoints whose response envelope is still non-standard.
 
-## 🌊 Contributing & Drips Wave
+## Contributing
 
-This repository is hoping to  participates in the **[Stellar Drips Wave](https://www.drips.network/wave/stellar)** bounty program — contributors earn Points (and real rewards) for resolving this repo's issues during a Wave, with complexity tiers set in the Drips Wave app.
-
-- All pull requests target the **`dev`** branch (`main` is releases only)
+- Pull requests target **`main`** and are squash-merged automatically when repository checks and review gates pass.
 - CI (tests) must pass before review
-- One contributor per issue — request it through the campaign (Drips Wave / GrantFox OSS); the maintainer assigns it. Please don't open a PR for an issue you haven't been assigned.
+- Claim or confirm an issue with the maintainers before starting substantial work.
 
-Read **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full workflow, coding standards, and Wave rules.
+Read **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full workflow and coding standards.
 
 ## 📜 License
 
